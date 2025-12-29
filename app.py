@@ -26,6 +26,8 @@ import smtplib  # Tambahkan import smtplib untuk menangani error spesifik autent
 # Load environment variables
 load_dotenv()  # Simplified env loading to default to the current directory for better reliability in folder-based projects
 
+client = MongoClient(os.getenv("MONGO_URI"))
+
 app = Flask(__name__)
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
