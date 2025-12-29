@@ -1,0 +1,15 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Node (diemin aja, jangan ikut git)
+node_modules/
+app.js
+package.json
+package-lock.json
+
+# Env & data
+.env
+database.db
+*.log
