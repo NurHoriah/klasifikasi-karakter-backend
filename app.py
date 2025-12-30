@@ -727,6 +727,9 @@ def download_all():
         print(f"[ERROR] Download all: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/')
+def index():
+    return jsonify({"message": "Backend is running!"})
 
 # ===========================
 # SERVER RUN
