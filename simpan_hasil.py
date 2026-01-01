@@ -1,25 +1,27 @@
-from database import get_db_connection
-import json
+# simpan_hasil.py
+from db import get_collection
+from datetime import datetime
 
 def simpan_hasil(nama_siswa, data_input, tipe_karakter, akurasi):
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    """
+    Simpan hasil klasifikasi ke MongoDB Atlas
+    """
 
-    # Menyimpan data siswa jika belum ada
-    cursor.execute('SELECT id FROM siswa WHERE nama = ?', (nama_siswa,))
-    siswa = cursor.fetchone()
-    if siswa is None:
-        cursor.execute('INSERT INTO siswa (nama) VALUES (?)', (nama_siswa,))
-        siswa_id = cursor.lastrowid
-    else:
-        siswa_id = siswa['id']
+    col = get_collection("hasil_klasifikasi")
 
-    # Menyimpan hasil klasifikasi
-    cursor.execute('''
-        INSERT INTO hasil_klasifikasi (siswa_id, tipe_karakter, akurasi)
-        VALUES (?, ?, ?)
-    ''', (siswa_id, tipe_karakter, akurasi))
+    dokumen = {
+        "nama_siswa": nama_siswa,
+        "kelas": data_input.get("kelas"),
+        "tipe_karakter": tipe_karakter,
+        "akurasi": akurasi,
 
-    conn.commit()
-    conn.close()
-    print(f"✅ Hasil klasifikasi untuk {nama_siswa} telah disimpan.")
+        # simpan SEMUA input (penting untuk CSV & Excel)
+        "data_input": data_input,
+
+        # timestamp (penting untuk filter tanggal)
+        "created_at": datetime.utcnow()
+    }
+
+    col.insert_one(dokumen)
+
+    print(f"✅ Hasil klasifikasi untuk {nama_siswa} tersimpan di MongoDB")
